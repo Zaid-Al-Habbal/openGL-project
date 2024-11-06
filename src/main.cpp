@@ -14,6 +14,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 // const std::string shadersDir = "/home/zaidalhabbal/Documents/OpenGL/openGL_project/src/shaders/";
 
+float vis = 0.5f;
 int main()
 {
     // glfw: initialize and configure
@@ -47,10 +48,10 @@ int main()
 
     float vertices[] = {
         // positions          // colors           // texture coords
-        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   2.0f, 2.0f,   // top right
-        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   2.0f, 0.0f,   // bottom right
+        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
         -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 2.0f    // top left            
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left            
     };
     unsigned int indices[] = {
         0, 1, 3, // first triangle
@@ -159,8 +160,8 @@ int main()
         // draw our first triangle
         // moveValue+=0.001;
         // ourShader.setFloat("offsetVal", moveValue);
-
-
+        std::cout << "vis = " << vis << std::endl;
+        ourShader.setFloat("visibility", vis);
         //using uniforms to update color globaly +_+:
         // float timeValue = glfwGetTime();
         // float greenValue = (sin(timeValue)/2.0f) + 0.5f;
@@ -193,6 +194,16 @@ void processInput(GLFWwindow *window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
+        vis += 0.001f; // change this value accordingly (might be too slow or too fast based on system hardware)
+        if(vis >= 1.0f)
+            vis = 1.0f;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+        vis -= 0.001f; // change this value accordingly (might be too slow or too fast based on system hardware)
+        if (vis <= 0.0f)
+            vis = 0.0f;
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
