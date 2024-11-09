@@ -11,5 +11,5 @@ uniform float visibility;
 
 void main()
 {
-    FragColor = mix(texture(tex1, texCoord), texture(tex2, vec2(1.0-texCoord.x, texCoord.y)), visibility);
+    FragColor = mix(vec4(myColor,1.0f) * texture(tex1, texCoord), texture(tex2, vec2(1.0-texCoord.x, texCoord.y)), visibility);
 }

@@ -1,6 +1,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <iostream>
 #include <bits/stdc++.h>
 #include <shader_s.h>
@@ -12,9 +16,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-// const std::string shadersDir = "/home/zaidalhabbal/Documents/OpenGL/openGL_project/src/shaders/";
+float vis = 0.01;
 
-float vis = 0.5f;
 int main()
 {
     // glfw: initialize and configure
@@ -25,8 +28,7 @@ int main()
 
     // glfw window creation
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
+    if (window == NULL){
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
@@ -35,8 +37,7 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // glad: load all OpenGL function pointers
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }    
@@ -56,8 +57,7 @@ int main()
     unsigned int indices[] = {
         0, 1, 3, // first triangle
         1, 2, 3  // second triangle
-    };
-    
+    };    
 
     int width, height, nrChannels;
     unsigned char *data1 = stbi_load(FileSystem::getPath("resources/textures/container.jpg").c_str(), &width, &height, &nrChannels, 0);
@@ -96,8 +96,8 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     if (data2){
         // load and generate the texture
@@ -145,33 +145,42 @@ int main()
     // uncomment this call to draw in wireframe polygons.
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    // float moveValue = 0.1;
     // render loop
     ourShader.use();
     ourShader.setInt("tex1", 0);
     ourShader.setInt("tex2", 1);
+
+        
+
     while(!glfwWindowShouldClose(window)){
         
         processInput(window);
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-
-        // draw our first triangle
-        // moveValue+=0.001;
-        // ourShader.setFloat("offsetVal", moveValue);
-        std::cout << "vis = " << vis << std::endl;
+        
         ourShader.setFloat("visibility", vis);
-        //using uniforms to update color globaly +_+:
-        // float timeValue = glfwGetTime();
-        // float greenValue = (sin(timeValue)/2.0f) + 0.5f;
-        // float redValue = (cos(timeValue)/2.0f) + 0.5f;
-        // int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+        
+        // create transformations
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(1.0f, 0.0f, 0.0f));
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
 
-        // glUniform4f(vertexColorLocation, redValue, greenValue, 0.3f, 1.0f);
+        // get matrix's uniform location and set matrix
+        unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT,0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT,0);
+
+        // second transformation
+        trans = glm::mat4(1.0f); // reset it to identity matrix
+        float scaleAmount = static_cast<float>(sin(glfwGetTime()));
+        trans = glm::scale(trans, glm::vec3(scaleAmount, scaleAmount, scaleAmount));
+        trans = glm::translate(trans, glm::vec3(-0.0002f, 0.0002f, 0.0f));
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &trans[0][0]); // this time take the matrix value array's first element as its memory pointer value
+
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT,0);
         //glDrawArrays(GL_TRIANGLES, 0, 3); // for VBO
         // glBindVertexArray(0); // no need to unbind it every time 
 
