@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <iostream>
+// #include <iostream>
 #include <bits/stdc++.h>
 #include <shader_s.h>
 #include <stb_image.h>
@@ -16,7 +16,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-float vis = 0.01;
+float vis = 0.01, red = 0.3, blue = 0.2, green = 0.4;
 
 int main()
 {
@@ -212,6 +212,9 @@ float vertices[] = {
 
         // activate shader
         ourShader.setFloat("visibility", vis);
+        ourShader.setFloat("red", red);
+        ourShader.setFloat("blue", blue);
+        ourShader.setFloat("green", green);
 
         // create transformations
         glm::mat4 view          = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
@@ -265,6 +268,30 @@ void processInput(GLFWwindow *window)
         vis -= 0.001f; // change this value accordingly (might be too slow or too fast based on system hardware)
         if (vis <= 0.0f)
             vis = 0.0f;
+    }
+    else if(glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS){
+        blue+=0.001f;
+        if(blue>1.0f) blue = 1.0f;
+    }
+    else if(glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS){
+        blue-=0.001f;
+        if(blue<0.0f) blue = 0.0f;
+    }
+    else if(glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS){
+        red+=0.001f;
+        if(red>1.0f) red = 1.0f;
+    }
+    else if(glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS){
+        red-=0.001f;
+        if(red<0.0f) red = 0.0f;
+    }
+    else if(glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS){
+        green+=0.001f;
+        if(green>1.0f) green = 1.0f;
+    }
+    else if(glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS){
+        green-=0.001f;
+        if(green<0.0f) green = 0.0f;
     }
 }
 
