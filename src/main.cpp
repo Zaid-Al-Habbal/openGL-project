@@ -11,6 +11,10 @@
 #include <stb_image.h>
 #include <filesystem.h>
 #include <camera.h>
+#include "Texture.h"
+#include "VAO.h"
+#include "VBO.h"
+#include "EBO.h"
 
 void processInput(GLFWwindow *window);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -126,96 +130,35 @@ float vertices[] = {
         glm::vec3(-1.3f,  1.0f, -1.5f)  
     }; 
 
-    int width, height, nrChannels;
-    unsigned char *data1 = stbi_load(FileSystem::getPath("resources/textures/container.jpg").c_str(), &width, &height, &nrChannels, 0);
+    Texture containerTex("../resources/textures/pattern.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+    containerTex.texUnit(ourShader, "tex1", 0);
 
-    unsigned int tex1, tex2;
-    glGenTextures(1, &tex1);
-    glGenTextures(1, &tex2);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, tex1);
-
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    if (data1){
-        // load and generate the texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data1);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else std::cout << "Failed to load texture" << std::endl;
-    
-    stbi_image_free(data1);
-
+    Texture awesomefaceTex("../resources/textures/awesomeface.png", GL_TEXTURE_2D, GL_TEXTURE1, GL_RGBA, GL_UNSIGNED_BYTE);
+    awesomefaceTex.texUnit(ourShader, "tex2", 1);
     stbi_set_flip_vertically_on_load(true);
-    unsigned char *data2 = stbi_load("../resources/textures/awesomeface.png", &width, &height, &nrChannels, 0);
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, tex2);
-
-
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    if (data2){
-        // load and generate the texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data2); //note we use RGBA for png photos
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else std::cout << "Failed to load texture" << std::endl;
     
-    unsigned int VBO, VAO, EBO;
-    glGenBuffers(1, &VBO);
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &EBO);
+    // Generates Vertex Array Object and binds it
+	VAO VAO1;
+	VAO1.Bind();
 
-     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    glBindVertexArray(VAO);
+	// Generates Vertex Buffer Object and links it to vertices
+	VBO VBO1(vertices, sizeof(vertices));
+	// Generates Element Buffer Object and links it to indices
+	// EBO EBO1(indices, sizeof(indices));
 
-    //using VBO:
+	// Links VBO attributes such as coordinates and colors to VAO
+	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	// Unbind all to prevent accidentally modifying them
+	VAO1.Unbind();
+	VBO1.Unbind();
+	// EBO1.Unbind();
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    //using EBO:
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    //configure vertex attributes: position:
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    //configure vertex attributes: color:
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3*sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    //configure vertex attributes: Texture:
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6*sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-    glBindBuffer(GL_ARRAY_BUFFER, 0); 
-
-    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-    glBindVertexArray(0); 
-
-    // uncomment this call to draw in wireframe polygons.
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // render loop
     ourShader.use();
-    ourShader.setInt("tex1", 0);
-    ourShader.setInt("tex2", 1);
             
     while(!glfwWindowShouldClose(window)){
 
@@ -245,9 +188,10 @@ float vertices[] = {
         ourShader.setFloat("blue", blue);
         ourShader.setFloat("green", green);
 
+        awesomefaceTex.Bind(); 
+        containerTex.Bind();
+        VAO1.Bind();
 
-        // render boxes
-        glBindVertexArray(VAO);
         for (unsigned int i = 0; i < 10; i++)
         {
             // calculate the model matrix for each object and pass it to shader before drawing
@@ -269,9 +213,12 @@ float vertices[] = {
     }
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
+    // Delete all the objects we've created
+	VAO1.Delete();
+	VBO1.Delete();
+	// EBO1.Delete();
+    containerTex.Delete();
+    awesomefaceTex.Delete();
     // glfw: terminate, clearing all previously allocated GLFW resources.
     glfwTerminate();
     return 0;
