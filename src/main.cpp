@@ -163,10 +163,22 @@ int main()
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
         
+        //change light color over time:
+        glm::vec3 lightColor;
+        lightColor.x = sin(glfwGetTime() * 2.0f);
+        lightColor.y = sin(glfwGetTime() * 0.7f);
+        lightColor.z = sin(glfwGetTime() * 1.3f);
+        
+        glm::vec3 diffuseColor = lightColor   * glm::vec3(0.8f); 
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
+        glm::vec3 specularColor(1.0f); 
+
+        //lIGHT SOURCE SHADER:
         lightShader.use();
         glm::mat4 lightModel = glm::mat4(1.0f);
         lightModel = glm::translate(lightModel, lightPos);
         lightModel = glm::scale(lightModel, glm::vec3(0.2f)); 
+        lightShader.setVec3("color", lightColor);
         lightShader.setMat4("model", lightModel);
         lightShader.setMat4("projection", projection);
         lightShader.setMat4("view", view);
@@ -177,10 +189,22 @@ int main()
         myShader.use();
         glm::mat4 cubeModel = glm::mat4(1.0f);
         cubeModel = glm::translate(cubeModel, glm::vec3(0.0f, 1.0f, 2.0f));
-        myShader.setVec3("lightPos", lightPos);
-        myShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-        myShader.setVec3("lightColor",  1.0f, 1.0f, 1.0f);
+        
+        //MYSHADER SHADER
+        
+        //light properities:
+        myShader.setVec3("light.position", lightPos);
+        myShader.setVec3("light.ambient",  ambientColor);
+        myShader.setVec3("light.diffuse",  diffuseColor); // darken diffuse light a bit
+        myShader.setVec3("light.specular", specularColor);
+
         myShader.setVec3("viewPos", camera.Position);
+        //material
+        myShader.setVec3("material.ambient", 0.0f, 0.1f, 0.06f);
+        myShader.setVec3("material.diffuse", 0.0f, 0.50980392f, 0.50980392f);
+        myShader.setVec3("material.specular", 0.50196078f, 0.50196078f, 0.50196078f);
+        myShader.setFloat("material.shininess", 32.0f);
+        //show
         myShader.setMat4("projection", projection);
         myShader.setMat4("view", view);
         myShader.setMat4("model", cubeModel);
