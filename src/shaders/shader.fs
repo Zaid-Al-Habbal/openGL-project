@@ -17,11 +17,15 @@ struct Material{
 uniform Material material;
 
 struct Light {
-    // vec3 position; no longer necessary when using directional lights.
-    vec3 direction; //for directional lighting.
+    vec3 position; //no longer necessary when using directional lights.
+    // vec3 direction; //for directional lighting.
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+
+    float constant;
+    float linear;
+    float quadratic;
 };
 
 uniform Light light;
@@ -33,7 +37,7 @@ void main()
     
     //diffuse impact:
     vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(-light.direction); 
+    vec3 lightDir = normalize(light.position - FragPos); 
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = light.diffuse * (diff * vec3(texture(material.diffuse, TexCoord)));
     
@@ -43,8 +47,11 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     vec3 specular = light.specular * (spec * vec3(texture(material.specular, TexCoord)));
 
-    
+    //calculate the attenuation for point light:
+    float dist = length(light.position - FragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * dist + 
+                            light.quadratic * (dist * dist));
     //final color with lighting:
-    vec3 res = (ambient + diffuse + specular);
+    vec3 res = (ambient + diffuse + specular)*attenuation;
     FragColor = vec4(res, 1.0);
 }

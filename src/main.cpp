@@ -213,11 +213,15 @@ int main()
         myShader.use();
 
         //light properities:
-        glm::vec3 lightDir(-0.2f, -1.0f, -0.3f);
-        myShader.setVec3("light.direction", lightDir);
+        // glm::vec3 lightDir(-0.2f, -1.0f, -0.3f); // for directional light
+        myShader.setVec3("light.position", lightPos);
         myShader.setVec3("light.ambient",  ambientColor);
         myShader.setVec3("light.diffuse",  diffuseColor); // darken diffuse light a bit
         myShader.setVec3("light.specular", specularColor);
+        //for point light:
+        myShader.setFloat("light.constant",  1.0f);
+        myShader.setFloat("light.linear",    0.09f);
+        myShader.setFloat("light.quadratic", 0.032f);	
 
         myShader.setVec3("viewPos", camera.Position);
         //material
