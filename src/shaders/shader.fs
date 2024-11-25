@@ -11,15 +11,14 @@ uniform vec3 viewPos;
 struct Material{
     sampler2D diffuse;
     sampler2D specular;
-    sampler2D emission;
     float shininess;
 };
 
 uniform Material material;
 
 struct Light {
-    vec3 position;
-
+    // vec3 position; no longer necessary when using directional lights.
+    vec3 direction; //for directional lighting.
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -34,7 +33,7 @@ void main()
     
     //diffuse impact:
     vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(light.position - FragPos); 
+    vec3 lightDir = normalize(-light.direction); 
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = light.diffuse * (diff * vec3(texture(material.diffuse, TexCoord)));
     
@@ -44,9 +43,8 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     vec3 specular = light.specular * (spec * vec3(texture(material.specular, TexCoord)));
 
-    //emission impact:
-    vec3 emission = texture(material.emission, TexCoord).rgb;
+    
     //final color with lighting:
-    vec3 res = (ambient + diffuse + specular + emission);
+    vec3 res = (ambient + diffuse + specular);
     FragColor = vec4(res, 1.0);
 }
