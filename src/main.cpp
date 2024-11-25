@@ -196,17 +196,17 @@ int main()
         glm::vec3 specularColor(1.0f); 
 
         //lIGHT SOURCE SHADER:
-        lightShader.use();
-        glm::mat4 lightModel = glm::mat4(1.0f);
-        lightModel = glm::translate(lightModel, lightPos);
-        lightModel = glm::scale(lightModel, glm::vec3(0.2f)); 
-        lightShader.setVec3("color", lightColor);
-        lightShader.setMat4("model", lightModel);
-        lightShader.setMat4("projection", projection);
-        lightShader.setMat4("view", view);
+        // lightShader.use();
+        // glm::mat4 lightModel = glm::mat4(1.0f);
+        // lightModel = glm::translate(lightModel, lightPos);
+        // lightModel = glm::scale(lightModel, glm::vec3(0.2f)); 
+        // lightShader.setVec3("color", lightColor);
+        // lightShader.setMat4("model", lightModel);
+        // lightShader.setMat4("projection", projection);
+        // lightShader.setMat4("view", view);
 
-        lightVAO.Bind();
-        glDrawArrays(GL_TRIANGLES, 0, 36);	
+        // lightVAO.Bind();
+        // glDrawArrays(GL_TRIANGLES, 0, 36);	
 
         
         //MYSHADER SHADER
@@ -214,9 +214,13 @@ int main()
 
         //light properities:
         // glm::vec3 lightDir(-0.2f, -1.0f, -0.3f); // for directional light
-        myShader.setVec3("light.position", lightPos);
-        myShader.setVec3("light.ambient",  ambientColor);
-        myShader.setVec3("light.diffuse",  diffuseColor); // darken diffuse light a bit
+        //for spotlight
+        myShader.setVec3("light.position", camera.Position);
+        myShader.setVec3("light.direction", camera.Front);
+        myShader.setFloat("light.cutOff",   glm::cos(glm::radians(12.5f)));
+        myShader.setFloat("light.outerCutOff",   glm::cos(glm::radians(17.5f)));
+        myShader.setVec3("light.ambient",  0.1f, 0.1f, 0.1f);
+        myShader.setVec3("light.diffuse",  0.8f, 0.8f, 0.8f); // darken diffuse light a bit
         myShader.setVec3("light.specular", specularColor);
         //for point light:
         myShader.setFloat("light.constant",  1.0f);
@@ -227,7 +231,7 @@ int main()
         //material
         containerTex.texUnit(myShader, "material.diffuse", 0);
         containerSpecTex.texUnit(myShader, "material.specular", 1);
-        myShader.setFloat("material.shininess", 64.0f);
+        myShader.setFloat("material.shininess", 32.0f);
         //show
         myShader.setMat4("projection", projection);
         myShader.setMat4("view", view);
@@ -272,22 +276,6 @@ void processInput(GLFWwindow *window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        vis = (vis>=0.999) ? 1.0f : vis+0.001f;
-    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        vis = (vis<=0.001) ? 0.0f : vis-0.001f;
-    if(glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
-        blue = (blue>=0.999) ? 1.0f : blue+0.001f;
-    if(glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
-        blue = (blue<=0.001) ? 0.0f : blue-0.001f;
-    if(glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-        red = (red>=0.999) ? 1.0f : red+0.001f;
-    if(glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-        red = (red<=0.001) ? 0.0f : red-0.001f;
-    if(glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-        green = (green>=0.999) ? 1.0f : green+0.001f;
-    if(glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-        green = (green<=0.001) ? 0.0f : green-0.001f;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
