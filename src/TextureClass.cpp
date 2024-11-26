@@ -1,8 +1,8 @@
-#include"Texture.h"
+#include"TextureClass.h"
 
-Texture::Texture(){}
+TextureClass::TextureClass(){}
 
-Texture::Texture(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType)
+TextureClass::TextureClass(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType)
 {
 	// Assigns the type of the texture ot the texture object
         type = texType;
@@ -17,7 +17,7 @@ Texture::Texture(const char* image, GLenum texType, GLenum slot, GLenum format, 
 
         // Generates an OpenGL texture object
         glGenTextures(1, &ID);
-        // Assigns the texture to a Texture Unit
+        // Assigns the texture to a TextureClass Unit
         glActiveTexture(slot);
         glBindTexture(texType, ID);
 
@@ -48,7 +48,7 @@ Texture::Texture(const char* image, GLenum texType, GLenum slot, GLenum format, 
         // Unbinds the OpenGL Texture object so that it can't accidentally be modified
         glBindTexture(texType, 0);
 }
-void Texture::texUnit(Shader& shader, const char* uniform, GLuint unit)
+void TextureClass::texUnit(Shader& shader, const char* uniform, GLuint unit)
 {
 	// Gets the location of the uniform
 	GLuint texUni = glGetUniformLocation(shader.ID, uniform);
@@ -58,18 +58,18 @@ void Texture::texUnit(Shader& shader, const char* uniform, GLuint unit)
 	glUniform1i(texUni, unit);
 }
 
-void Texture::Bind()
+void TextureClass::Bind()
 {
 	glActiveTexture(texSlot);
     glBindTexture(type, ID);
 }
 
-void Texture::Unbind()
+void TextureClass::Unbind()
 {
 	glBindTexture(type, 0);
 }
 
-void Texture::Delete()
+void TextureClass::Delete()
 {
 	glDeleteTextures(1, &ID);
 }

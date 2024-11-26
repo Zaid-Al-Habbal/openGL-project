@@ -1,7 +1,7 @@
 #include "Light.h"
 
 Light::Light(Shader myShader, bool enableDir, bool enablePoint, bool enableSpot, glm::vec3 cameraPos, glm::vec3 cameraFront, 
-                Texture materialDiffuse, Texture materialSpecular)
+                TextureClass materialDiffuse, TextureClass materialSpecular)
 {
     this->myShader = myShader;
     this->enableDir = enableDir;

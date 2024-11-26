@@ -9,7 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include"shader.h"
-#include"Texture.h"
+#include"TextureClass.h"
 #include "camera.h"
 
 
@@ -33,11 +33,11 @@ public:
     //comera position:
     glm::vec3 viewPos;
     //Material:
-    Texture materialDiffuse, materialSpecular;
+    TextureClass materialDiffuse, materialSpecular;
     float materialShininess;
 
     Light(Shader myShader, bool enableDir, bool enablePoint, bool enableSpot, glm::vec3 cameraPos, glm::vec3 cameraFront, 
-                Texture materialDiffuse, Texture materialSpecular);
+                TextureClass materialDiffuse, TextureClass materialSpecular);
 
     void turnOnTheLights();
 	

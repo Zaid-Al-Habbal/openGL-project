@@ -16,3 +16,4 @@ resources/textures
 configuration/
 CMakeLists.txt
 bin/
+resources/objects
