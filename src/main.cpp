@@ -7,7 +7,7 @@
 
 #include <bits/stdc++.h>
 
-#include <shader_s.h>
+#include <shader.h>
 #include <stb_image.h>
 #include <filesystem.h>
 #include <camera.h>
@@ -15,6 +15,7 @@
 #include "VAO.h"
 #include "VBO.h"
 #include "EBO.h"
+#include "Light.h"
 
 void processInput(GLFWwindow *window);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -36,6 +37,77 @@ bool firstMouse = true;
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
+
+
+
+float vertices[] = {
+        // positions          // normals           // texture coords
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
+    };
+//positios of cubes:
+glm::vec3 cubePositions[] = {
+    glm::vec3( 0.0f,  0.0f,  0.0f),
+    glm::vec3( 2.0f,  5.0f, -15.0f),
+    glm::vec3(-1.5f, -2.2f, -2.5f),
+    glm::vec3(-3.8f, -2.0f, -12.3f),
+    glm::vec3( 2.4f, -0.4f, -3.5f),
+    glm::vec3(-1.7f,  3.0f, -7.5f),
+    glm::vec3( 1.3f, -2.0f, -2.5f),
+    glm::vec3( 1.5f,  2.0f, -2.5f),
+    glm::vec3( 1.5f,  0.2f, -1.5f),
+    glm::vec3(-1.3f,  1.0f, -1.5f)
+};
+
+//positions of point lights:
+glm::vec3 pointLightPositions[] = {
+    glm::vec3( 0.7f,  0.2f,  2.0f),
+    glm::vec3( 2.3f, -3.3f, -4.0f),
+    glm::vec3(-4.0f,  2.0f, -12.0f),
+    glm::vec3( 0.0f,  0.0f, -3.0f)
+};
+
+//LIGHT POSITOIN:
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 int main()
 {
@@ -70,76 +142,13 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     // build and compile our shader program:
-    Shader ourShader("../src/shaders/shader.vs", "../src/shaders/shader.fs");
+    Shader myShader("../src/shaders/shader.vs", "../src/shaders/shader.fs");
+    Shader lightShader("../src/shaders/lightSource.vs", "../src/shaders/lightSource.fs");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes:
-float vertices[] = {
-        //positions          //colors           //texture
-        -0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f, 
-         0.5f,  0.5f, -0.5f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-
-        -0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,1.0f, 0.0f,
-
-        -0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,0.0f, 1.0f,
-
-        -0.5f,  0.5f, -0.5f,  1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f
-    };
-    glm::vec3 cubePositions[] = {
-        glm::vec3( 0.0f,  0.0f,  0.0f), 
-        glm::vec3( 2.0f,  5.0f, -15.0f), 
-        glm::vec3(-1.5f, -2.2f, -2.5f),  
-        glm::vec3(-3.8f, -2.0f, -12.3f),  
-        glm::vec3( 2.4f, -0.4f, -3.5f),  
-        glm::vec3(-1.7f,  3.0f, -7.5f),  
-        glm::vec3( 1.3f, -2.0f, -2.5f),  
-        glm::vec3( 1.5f,  2.0f, -2.5f), 
-        glm::vec3( 1.5f,  0.2f, -1.5f), 
-        glm::vec3(-1.3f,  1.0f, -1.5f)  
-    }; 
-
-    Texture containerTex("../resources/textures/pattern.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-    containerTex.texUnit(ourShader, "tex1", 0);
-
-    Texture awesomefaceTex("../resources/textures/awesomeface.png", GL_TEXTURE_2D, GL_TEXTURE1, GL_RGBA, GL_UNSIGNED_BYTE);
-    awesomefaceTex.texUnit(ourShader, "tex2", 1);
-    stbi_set_flip_vertically_on_load(true);
     
     // Generates Vertex Array Object and binds it
-	VAO VAO1;
-	VAO1.Bind();
+	VAO VAO1, lightVAO;
 
 	// Generates Vertex Buffer Object and links it to vertices
 	VBO VBO1(vertices, sizeof(vertices));
@@ -147,22 +156,70 @@ float vertices[] = {
 	// EBO EBO1(indices, sizeof(indices));
 
 	// Links VBO attributes such as coordinates and colors to VAO
+	VAO1.Bind();
 	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	// Unbind all to prevent accidentally modifying them
+    VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3*sizeof(float)));
+    VAO1.LinkAttrib(VBO1, 2, 3, GL_FLOAT, 8 * sizeof(float), (void*)(6*sizeof(float)));
 	VAO1.Unbind();
-	VBO1.Unbind();
-	// EBO1.Unbind();
+
+    lightVAO.Bind();
+    lightVAO.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+    lightVAO.Unbind();
+
+	//Texture:
+    Texture containerTex("../resources/textures/container2.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+    Texture containerSpecTex("../resources/textures/container2_specular.png", GL_TEXTURE_2D, GL_TEXTURE1, GL_RGBA, GL_UNSIGNED_BYTE);
 
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // render loop
-    ourShader.use();
             
+
     while(!glfwWindowShouldClose(window)){
 
-        
+        // per-frame time logic
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        // input
+        processInput(window);
+
+        // render
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
+
+        // pass projection matrix to shader (note that in this case it could change every frame)
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        ourShader.setMat4("projection", projection);
+
+        // camera/view transformation
+        glm::mat4 view = camera.GetViewMatrix();
+        ourShader.setMat4("view", view);
+
+        // activate shader
+        ourShader.setFloat("visibility", vis);
+        ourShader.setFloat("red", red);
+        ourShader.setFloat("blue", blue);
+        ourShader.setFloat("green", green);
+
+        awesomefaceTex.Bind(); 
+        containerTex.Bind();
+        VAO1.Bind();
+
+        for (unsigned int i = 0; i < 10; i++)
+        {
+            // calculate the model matrix for each object and pass it to shader before drawing
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            if(i%3==0){
+            float angle = (float)glfwGetTime()*(i+100);
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            }
+            ourShader.setMat4("model", model);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -173,10 +230,11 @@ float vertices[] = {
     // ------------------------------------------------------------------------
     // Delete all the objects we've created
 	VAO1.Delete();
+    lightVAO.Delete();
 	VBO1.Delete();
-	// EBO1.Delete();
     containerTex.Delete();
-    awesomefaceTex.Delete();
+    containerSpecTex.Delete();
+	// EBO1.Delete();
     // glfw: terminate, clearing all previously allocated GLFW resources.
     glfwTerminate();
     return 0;
@@ -187,22 +245,6 @@ void processInput(GLFWwindow *window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        vis = (vis>=0.999) ? 1.0f : vis+0.001f;
-    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        vis = (vis<=0.001) ? 0.0f : vis-0.001f;
-    if(glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
-        blue = (blue>=0.999) ? 1.0f : blue+0.001f;
-    if(glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
-        blue = (blue<=0.001) ? 0.0f : blue-0.001f;
-    if(glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-        red = (red>=0.999) ? 1.0f : red+0.001f;
-    if(glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-        red = (red<=0.001) ? 0.0f : red-0.001f;
-    if(glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-        green = (green>=0.999) ? 1.0f : green+0.001f;
-    if(glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-        green = (green<=0.001) ? 0.0f : green-0.001f;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -245,4 +287,4 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset){
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
-}
+}   
