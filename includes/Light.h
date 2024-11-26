@@ -33,11 +33,8 @@ public:
     //comera position:
     glm::vec3 viewPos;
     //Material:
-    TextureClass materialDiffuse, materialSpecular;
-    float materialShininess;
-
-    Light(Shader myShader, bool enableDir, bool enablePoint, bool enableSpot, glm::vec3 cameraPos, glm::vec3 cameraFront, 
-                TextureClass materialDiffuse, TextureClass materialSpecular);
+    
+    Light(Shader myShader, bool enableDir, bool enablePoint, bool enableSpot, glm::vec3 cameraPos, glm::vec3 cameraFront);
 
     void turnOnTheLights();
 	

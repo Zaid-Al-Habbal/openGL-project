@@ -1,7 +1,6 @@
 #include "Light.h"
 
-Light::Light(Shader myShader, bool enableDir, bool enablePoint, bool enableSpot, glm::vec3 cameraPos, glm::vec3 cameraFront, 
-                TextureClass materialDiffuse, TextureClass materialSpecular)
+Light::Light(Shader myShader, bool enableDir, bool enablePoint, bool enableSpot, glm::vec3 cameraPos, glm::vec3 cameraFront)
 {
     this->myShader = myShader;
     this->enableDir = enableDir;
@@ -32,9 +31,9 @@ Light::Light(Shader myShader, bool enableDir, bool enablePoint, bool enableSpot,
     //viewPos:
     this->viewPos = cameraPos;
     //material:
-    this->materialShininess = 32.0f;
-    this->materialDiffuse = materialDiffuse;
-    this->materialSpecular = materialSpecular;
+    // this->materialShininess = 32.0f;
+    // this->materialDiffuse = materialDiffuse;
+    // this->materialSpecular = materialSpecular;
  
 }
 
@@ -42,9 +41,9 @@ void Light::turnOnTheLights(){
     myShader.use();
     myShader.setVec3("viewPos", viewPos);
     //Material:
-    materialDiffuse.texUnit(myShader, "material.diffuse", 0);
-    materialSpecular.texUnit(myShader, "material.specular", 1);
-    myShader.setFloat("material.shininess", 32.0f);
+    // materialDiffuse.texUnit(myShader, "material.diffuse", 0);
+    // materialSpecular.texUnit(myShader, "material.specular", 1);
+    // myShader.setFloat("material.shininess", 32.0f);
     
 
     //lights:
@@ -82,8 +81,8 @@ void Light::turnOnTheLights(){
     myShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(spotLightCutOff)));
     myShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(spotLightOuterCutOff)));
     //material:
-    materialDiffuse.texUnit(myShader, "material.diffuse", 0);
-    materialSpecular.texUnit(myShader, "material.specular", 1);
-    myShader.setFloat("material.shininess", materialShininess);
+    // materialDiffuse.texUnit(myShader, "material.diffuse", 0);
+    // materialSpecular.texUnit(myShader, "material.specular", 1);
+    // myShader.setFloat("material.shininess", materialShininess);
     
 }
