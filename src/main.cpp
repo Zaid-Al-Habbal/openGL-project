@@ -18,7 +18,9 @@
 #include "VBO.h"
 #include "EBO.h"
 #include "Light.h"
+#include "Cube.h"
 
+using namespace std;
 
 void processInput(GLFWwindow *window);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -77,13 +79,29 @@ int main()
 
     // build and compile our shader program:
     Shader modelShader("../src/shaders/model_loading.vs", "../src/shaders/model_loading.fs");
+    Shader cubeShader("../src/shaders/mainShader.vs", "../src/shaders/mainShader.fs");
 
     //load Model:
     Model myModel("../resources/objects/backpack/backpack.obj");
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    //texture:
+    TextureClass containerTex("../resources/textures/container2.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+    TextureClass containerSpecTex("../resources/textures/container2_specular.png", GL_TEXTURE_2D, GL_TEXTURE1, GL_RGBA, GL_UNSIGNED_BYTE);
+
+    
+    //VBO & VAO:
+    VBO cubeVBO(Cube::vertices, sizeof(Cube::vertices));
+    VAO cubeVAO;
+
+    // Links VBO attributes such as coordinates and colors to VAO
+	cubeVAO.Bind();
+	cubeVAO.LinkAttrib(cubeVBO, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+    cubeVAO.LinkAttrib(cubeVBO, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3*sizeof(float)));
+    cubeVAO.LinkAttrib(cubeVBO, 2, 3, GL_FLOAT, 8 * sizeof(float), (void*)(6*sizeof(float)));
+	cubeVAO.Unbind();
+
     // render loop
-            
 
     while(!glfwWindowShouldClose(window)){
 
@@ -98,26 +116,50 @@ int main()
         // render
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
-
-        modelShader.use();
-
+        
+        cubeShader.use();
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
-        modelShader.setMat4("projection", projection);
-        modelShader.setMat4("view", view);
-        
-        // render the loaded model
+        cubeShader.setMat4("projection", projection);
+        cubeShader.setMat4("view", view);
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
-        modelShader.setMat4("model", model);
-        Light myLight(modelShader, true, true, true, camera.Position, camera.Front);
-        modelShader.setFloat("shininess", 32.0f);
-        myLight.pointLightPosition = glm::vec3(2.1f, 1.0f, 4.0f);
-        myLight.pointLightColor = glm::vec3(0.0f, 0.0f, 1.0f);
-        myLight.turnOnTheLights();
-        //Draw Model:
-        myModel.Draw(modelShader);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 0.2f));
+        cubeShader.setMat4("model", model);
+        containerTex.Bind();
+        containerSpecTex.Bind();
+        cubeShader.setFloat("shininess", 32.0f);
+        containerTex.texUnit(cubeShader, "texture.diffuse1", 0);
+        containerSpecTex.texUnit(cubeShader, "texture.specular1", 1);
+        Light cubeLight(cubeShader, true, 3, true, camera.Position, camera.Front);
+        cubeLight.spotLightColor = glm::vec3(0.0f, 0.0f, 1.0f);
+        cubeLight.pointLightPosition[0] = glm::vec3(5.0f, 5.0f, 0.0f);
+        cubeLight.pointLightColor[0] = glm::vec3(0.0f, 1.0f, 1.0f);
+        cubeLight.pointLightPosition[1] = glm::vec3(2.0f, 0.0f, 12.0f);
+        cubeLight.pointLightColor[1] = glm::vec3(0.0f, 1.0f, 0.0f);
+        cubeLight.pointLightPosition[2] = glm::vec3(2.0f, 5.0f, 3.0f);
+        cubeLight.pointLightColor[2] = glm::vec3(1.0f, 0.0f, 0.0f);
+        
+        cubeLight.turnOnTheLights();
+        cubeVAO.Bind();
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        // modelShader.use();
+
+        // modelShader.setMat4("projection", projection);
+        // modelShader.setMat4("view", view);
+        // render the loaded model
+        // glm::mat4 model = glm::mat4(1.0f);
+        // model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+        // model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+        // modelShader.setMat4("model", model);
+        // Light myLight(modelShader, true, true, true, camera.Position, camera.Front);
+        // modelShader.setFloat("shininess", 32.0f);
+        // myLight.pointLightPosition = glm::vec3(2.1f, 1.0f, 4.0f);
+        // myLight.pointLightColor = glm::vec3(0.0f, 0.0f, 1.0f);
+        
+        // myLight.turnOnTheLights();
+        // //Draw Model:
+        // myModel.Draw(modelShader);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

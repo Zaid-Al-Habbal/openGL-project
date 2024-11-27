@@ -12,6 +12,8 @@
 #include"TextureClass.h"
 #include "camera.h"
 
+#include <vector>
+
 
 
 class Light
@@ -20,21 +22,22 @@ public:
     // directional light:
     glm::vec3 dirLightColor, dirLightDirection, dirLightAmbient, dirLightDiffuse, dirLightSpecular;
     // Point light:
-    glm::vec3 pointLightColor, pointLightAmbient, pointLightDiffuse, pointLightSpecular, pointLightPosition;
-    float pointLightConstant, pointLightLinear, pointLightQuadratic;
+    glm::vec3 pointLightColor[10], pointLightAmbient[10], pointLightDiffuse[10], pointLightSpecular[10], pointLightPosition[10];
+    float pointLightConstant[10], pointLightLinear[10], pointLightQuadratic[10];
     // Spot light:
     glm::vec3 spotLightColor, spotLightPosition, spotLightDirection, spotLightAmbient, spotLightDiffuse, spotLightSpecular;
     float spotLightConstant, spotLightLinear, spotLightQuadratic, spotLightCutOff,spotLightOuterCutOff;
     
     //for turning Lights on and off
-    bool enableDir, enablePoint, enableSpot;
+    bool enableDir, enableSpot;
+    int numOfPoints;
     //shader
     Shader myShader;
     //comera position:
     glm::vec3 viewPos;
     //Material:
     
-    Light(Shader myShader, bool enableDir, bool enablePoint, bool enableSpot, glm::vec3 cameraPos, glm::vec3 cameraFront);
+    Light(Shader myShader, bool enableDir, int numOfPoints, bool enableSpot, glm::vec3 cameraPos, glm::vec3 cameraFront);
 
     void turnOnTheLights();
 	

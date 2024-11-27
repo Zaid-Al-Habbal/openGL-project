@@ -1,22 +1,25 @@
 #include "Light.h"
 
-Light::Light(Shader myShader, bool enableDir, bool enablePoint, bool enableSpot, glm::vec3 cameraPos, glm::vec3 cameraFront)
+Light::Light(Shader myShader, bool enableDir, int numOfPoints, bool enableSpot, glm::vec3 cameraPos, glm::vec3 cameraFront)
 {
     this->myShader = myShader;
     this->enableDir = enableDir;
-    this->enablePoint = enablePoint;
+    this->numOfPoints = numOfPoints;
     this->enableSpot = enableSpot;
     //DirLight:
     this->dirLightColor = glm::vec3(1.0f);
     this->dirLightDirection = glm::vec3(-0.2f, -1.0f, -0.3f);
     this->dirLightSpecular = glm::vec3(1.0f);
     //PointLight:
-    this->pointLightColor = glm::vec3(1.0f);
-    this->pointLightSpecular = glm::vec3(1.0f);
-    this->pointLightConstant = 1.0f;
-    this->pointLightLinear = 0.09f;
-    this->pointLightQuadratic = 0.032f;
-    this->pointLightPosition = glm::vec3( 0.7f,  0.2f,  2.0f),
+    for(int i=0; i<numOfPoints; i++){
+        this->pointLightColor[i]= glm::vec3(1.0f);
+        this->pointLightSpecular[i]=glm::vec3(1.0f);
+        this->pointLightConstant[i] =1.0f;
+        this->pointLightLinear[i]=0.09f;
+        this->pointLightQuadratic[i] = 0.032f;
+        this->pointLightPosition[i] = glm::vec3( 0.7f,  0.2f,  2.0f); 
+        
+    }
     //SpotLight:
     this->spotLightColor = glm::vec3(1.0f);
     
@@ -56,16 +59,21 @@ void Light::turnOnTheLights(){
     myShader.setVec3("dirLight.ambient", dirLightAmbient);
     myShader.setVec3("dirLight.diffuse", dirLightDiffuse);
     // point light 
-    myShader.setBool("enablePoint", enablePoint);
-    this->pointLightDiffuse = this->pointLightColor * glm::vec3(0.8f);
-    this->pointLightAmbient = this->pointLightDiffuse * glm::vec3(0.2f);
-    myShader.setVec3("pointLights[0].position", pointLightPosition);
-    myShader.setVec3("pointLights[0].ambient", pointLightAmbient);
-    myShader.setVec3("pointLights[0].diffuse", pointLightDiffuse);
-    myShader.setVec3("pointLights[0].specular", pointLightSpecular);
-    myShader.setFloat("pointLights[0].constant", pointLightConstant);
-    myShader.setFloat("pointLights[0].linear", pointLightLinear);
-    myShader.setFloat("pointLights[0].quadratic", pointLightQuadratic);
+    myShader.setInt("numOfPoints", numOfPoints);
+    for(int i=0; i<numOfPoints; i++){
+        this->pointLightDiffuse[i] = this->pointLightColor[i] * glm::vec3(0.8f);
+        this->pointLightAmbient[i] = this->pointLightDiffuse[i] * glm::vec3(0.2f);
+    }
+    for(char x = '0'; x-'0'<numOfPoints; x++){
+        std::string ch; ch += x;
+        myShader.setVec3("pointLights["+ch+"].position", pointLightPosition[x-'0']);
+        myShader.setVec3("pointLights["+ch+"].ambient", pointLightAmbient[x-'0']);
+        myShader.setVec3("pointLights["+ch+"].diffuse", pointLightDiffuse[x-'0']);
+        myShader.setVec3("pointLights["+ch+"].specular", pointLightSpecular[x-'0']);
+        myShader.setFloat("pointLights["+ch+"].constant", pointLightConstant[x-'0']);
+        myShader.setFloat("pointLights["+ch+"].linear", pointLightLinear[x-'0']);
+        myShader.setFloat("pointLights["+ch+"].quadratic", pointLightQuadratic[x-'0']);
+    }
     // spotLight
     myShader.setBool("enableSpot", enableSpot);
     this->spotLightDiffuse = this->spotLightColor * glm::vec3(0.8f);
