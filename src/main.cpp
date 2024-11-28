@@ -78,11 +78,10 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     // build and compile our shader program:
-    Shader modelShader("../src/shaders/model_loading.vs", "../src/shaders/model_loading.fs");
-    Shader cubeShader("../src/shaders/mainShader.vs", "../src/shaders/mainShader.fs");
+    Shader mainShader("../src/shaders/mainShader.vs", "../src/shaders/mainShader.fs");
 
     //load Model:
-    Model myModel("../resources/objects/backpack/backpack.obj");
+    Model myModel("../resources/objects/transformers-one-orion-pax/source/scene.gltf");
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     //texture:
@@ -117,49 +116,41 @@ int main()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
         
-        cubeShader.use();
+        mainShader.use();
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
-        cubeShader.setMat4("projection", projection);
-        cubeShader.setMat4("view", view);
+        mainShader.setMat4("projection", projection);
+        mainShader.setMat4("view", view);
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 0.2f));
-        cubeShader.setMat4("model", model);
+
+        model = glm::translate(model, glm::vec3(10.0f, 0.0f, 10.0f));
+        mainShader.setMat4("model", model);
         containerTex.Bind();
         containerSpecTex.Bind();
-        cubeShader.setFloat("shininess", 32.0f);
-        containerTex.texUnit(cubeShader, "texture.diffuse1", 0);
-        containerSpecTex.texUnit(cubeShader, "texture.specular1", 1);
-        Light cubeLight(cubeShader, true, 3, true, camera.Position, camera.Front);
-        cubeLight.spotLightColor = glm::vec3(0.0f, 0.0f, 1.0f);
+        mainShader.setFloat("shininess", 64.0f);
+        containerTex.texUnit(mainShader, "texture.diffuse1", 0);
+        containerSpecTex.texUnit(mainShader, "texture.specular1", 1);
+        Light cubeLight(mainShader, true, 3, false, camera.Position, camera.Front);
+        // cubeLight.spotLightColor = glm::vec3(0.0f, 0.0f, 1.0f);
         cubeLight.pointLightPosition[0] = glm::vec3(5.0f, 5.0f, 0.0f);
         cubeLight.pointLightColor[0] = glm::vec3(0.0f, 1.0f, 1.0f);
         cubeLight.pointLightPosition[1] = glm::vec3(2.0f, 0.0f, 12.0f);
-        cubeLight.pointLightColor[1] = glm::vec3(0.0f, 1.0f, 0.0f);
+        cubeLight.pointLightColor[1] = glm::vec3(0.0f, 0.0f, 0.0f);
         cubeLight.pointLightPosition[2] = glm::vec3(2.0f, 5.0f, 3.0f);
-        cubeLight.pointLightColor[2] = glm::vec3(1.0f, 0.0f, 0.0f);
+        cubeLight.pointLightColor[2] = glm::vec3(0.0f, 0.0f, 0.0f);
         
         cubeLight.turnOnTheLights();
         cubeVAO.Bind();
         glDrawArrays(GL_TRIANGLES, 0, 36);
-        // modelShader.use();
 
-        // modelShader.setMat4("projection", projection);
-        // modelShader.setMat4("view", view);
-        // render the loaded model
-        // glm::mat4 model = glm::mat4(1.0f);
-        // model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-        // model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
-        // modelShader.setMat4("model", model);
-        // Light myLight(modelShader, true, true, true, camera.Position, camera.Front);
-        // modelShader.setFloat("shininess", 32.0f);
-        // myLight.pointLightPosition = glm::vec3(2.1f, 1.0f, 4.0f);
-        // myLight.pointLightColor = glm::vec3(0.0f, 0.0f, 1.0f);
-        
-        // myLight.turnOnTheLights();
-        // //Draw Model:
-        // myModel.Draw(modelShader);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+        // model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
+        // model = glm::rotate(model, -90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+        mainShader.setMat4("model", model);        
+        //Draw Model:
+        myModel.Draw(mainShader);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
