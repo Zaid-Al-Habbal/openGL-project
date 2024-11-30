@@ -1,3 +1,4 @@
+//Use it for make a Cube(set the subdivision=1) or a ball of squares, see: https://www.songho.ca/opengl/gl_sphere.html
 ///////////////////////////////////////////////////////////////////////////////
 // Cubesphere.h
 // ============

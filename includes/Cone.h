@@ -1,3 +1,10 @@
+//Use it for making:
+//                  Tetrahedron (sector=3)
+//                  Square Pyramid (sector=4)
+//                  Pentagonal Pyramid (sector=5)
+//                  Hexagonal Pyramid (sector=6)
+//                  Apex    
+// see: https://www.songho.ca/opengl/gl_cone.html
 ///////////////////////////////////////////////////////////////////////////////
 // Cone.h
 // ======

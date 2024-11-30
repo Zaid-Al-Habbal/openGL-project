@@ -1,3 +1,4 @@
+//Use it for making a ball of triangles: see https://www.songho.ca/opengl/gl_sphere.html
 ///////////////////////////////////////////////////////////////////////////////
 // Icosphere.h
 // ===========

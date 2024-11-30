@@ -1,3 +1,11 @@
+//Use it for making: 
+//                  Triangular Prism(sectorcount=3)
+//                  Rectangluar Prism(sectorcount=4)
+//                  Octagonal Prism(sectorcount=8)
+//                  Hexangular Prism(sectorcount=16) 
+//                  Cylinder (sectorcount=32)
+//                  AND Moooooooooooooooooooooooooore
+// see : https://www.songho.ca/opengl/gl_cylinder.html
 ///////////////////////////////////////////////////////////////////////////////
 // Cylinder.h
 // ==========
