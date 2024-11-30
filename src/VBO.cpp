@@ -1,7 +1,7 @@
 #include"VBO.h"
 
 // Constructor that generates a Vertex Buffer Object and links it to vertices
-VBO::VBO(GLfloat* vertices, GLsizeiptr size)
+VBO::VBO(const float* vertices, GLsizeiptr size)
 {
 	this->vertices = vertices;
 	this->size = size;

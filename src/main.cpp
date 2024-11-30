@@ -24,6 +24,11 @@
 #include "color.hpp"
 #include <Sofa.h>
 #include "Sphere.h"
+#include "Icosphere.h"
+#include "Cubesphere.h"
+#include "Cylinder.h"
+#include <Cone.h>
+#include "Torus.h"
 
 using namespace std;
 
@@ -68,47 +73,18 @@ int main()
     
 
         //texture:
-    TextureClass containerTex("../resources/textures/container2.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+    TextureClass containerTex("../resources/textures/pattern.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
     TextureClass containerSpecTex("../resources/textures/container2_specular.png", GL_TEXTURE_2D, GL_TEXTURE1, GL_RGBA, GL_UNSIGNED_BYTE);
 
     // create a sphere with default params;
 // radius=1, sectors=36, stacks=18, smooth=true
-    Sphere sphere;
+    Cubesphere sphere;
 
-    // create VAO to store all vertex array state to VAO
-    GLuint vaoId;
-    glGenVertexArrays(1, &vaoId);
-    glBindVertexArray(vaoId);
 
-    // create VBO to copy interleaved vertex data (V/N/T) to VBO
-    GLuint vboId;
-    glGenBuffers(1, &vboId);
-    glBindBuffer(GL_ARRAY_BUFFER, vboId);           // for vertex data
-    glBufferData(GL_ARRAY_BUFFER,                   // target
-                sphere.getInterleavedVertexSize(), // data size, # of bytes
-                sphere.getInterleavedVertices(),   // ptr to vertex data
-                GL_STATIC_DRAW);                   // usage
-
-    // create VBO to copy index data to VBO
-    GLuint iboId;
-    glGenBuffers(1, &iboId);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboId);   // for index data
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,           // target
-                sphere.getIndexSize(),             // data size, # of bytes
-                sphere.getIndices(),               // ptr to index data
-                GL_STATIC_DRAW);                   // usage
-
-    // activate attrib arrays
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-
-    // set attrib arrays with stride and offset
-    int stride = sphere.getInterleavedStride();     // should be 32 bytes
-    glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, false, stride, (void*)(sizeof(float)*3));
-    glVertexAttribPointer(2,  2, GL_FLOAT, false, stride, (void*)(sizeof(float)*6));
-
+    // create VBO to copy interleaved vertex data (V/N/T) to VBO             // usage
+    VBO vbo(sphere.getInterleavedVertices(), sphere.getInterleavedVertexSize());
+    VAO vao; vao.init(vbo);
+    EBO ebo(sphere.getIndices(), sphere.getIndexSize());
 
     // render loop:
     while(!controller.shouldClose()){
@@ -122,7 +98,7 @@ int main()
         //start mainShader:
         
         mainShader.use();
-        mainShader.setFloat("shininess", 32.0f);
+        mainShader.setFloat("shininess", 64.0f);
         containerTex.Bind();
         containerSpecTex.Bind();
         containerTex.texUnit(mainShader, "texture.diffuse1", 0);
@@ -134,16 +110,16 @@ int main()
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
         mainShader.setMat4("model", model);
-        Light light(mainShader, true, 0, false, camera.Position, camera.Front);
+        Light light(mainShader, true, 1, false, camera.Position, camera.Front);
+        light.pointLightPosition[0] = glm::vec3(0.0f, 0.0f, 3.0f);
         light.turnOnTheLights();
 
         // draw a sphere with VAO
-        glBindVertexArray(vaoId);
+        vao.Bind(); ebo.Bind();
         glDrawElements(GL_TRIANGLES,                    // primitive type
         sphere.getIndexCount(),          // # of indices
         GL_UNSIGNED_INT,                 // data type
         (void*)0);                       // offset to indices
-
 
 
 
