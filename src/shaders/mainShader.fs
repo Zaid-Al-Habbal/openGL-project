@@ -73,7 +73,7 @@ void main()
     vec3 specularTex = vec3(texture(texture_specular1, TexCoords));
 
     //Transparency value:
-    float alphaValue = texture(texture_diffuse1, TexCoords).a * alpha;
+    float alphaValue = (texture(texture_diffuse1, TexCoords).a + texture(texture_specular1, TexCoords).a) * alpha;
 
     //Dynamic Alpha based on Distance:
     float maxDistance = 50.0f;

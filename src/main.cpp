@@ -129,6 +129,7 @@ int main()
         //..material:
         TextureClass::enable(mainShader, myWindowTex, myWindowSpecTex);
         mainShader.setFloat("alpha", 0.5f);
+        
         //..model:
         model = glm::translate(myWindowModel, glm::vec3(0.0f, 0.0f, -2.0f));
         mainShader.setMat4("model", model);
