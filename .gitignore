@@ -17,3 +17,4 @@ configuration/
 CMakeLists.txt
 bin/
 resources/objects
+resources/
