@@ -86,7 +86,12 @@ void main()
     for(int i = 0; i < numOfPoints; i++)
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
     // phase 3: Spot light
-    if(enableSpot) result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
+    if(enableSpot) result += CalcSpotLight(spotLight, norm, FragPos, viewDir); 
+
+    // transparency:
+    vec4 texColor = texture(texture_diffuse1, TexCoords);
+    if(texColor.a < 0.1f) discard;  
+    // float transp =    
     
     FragColor = vec4(result, 1.0);
 }

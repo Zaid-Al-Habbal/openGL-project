@@ -39,52 +39,52 @@ int main()
 {
     //Controller:
     Controller controller;
-    if (!controller.initializeWindow("Neighbours From Hell")) return -1;
+    if (!controller.initializeWindow("Learning CG")) return -1;
     
     // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
     stbi_set_flip_vertically_on_load(true);
     // configure global opengl state
     glEnable(GL_DEPTH_TEST);
+    // enable blending:
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     //Shaders:
     Shader mainShader("../src/shaders/mainShader.vs", "../src/shaders/mainShader.fs");
+    Shader blendingShader("../src/shaders/mainShader.vs", "../src/shaders/blendingShader.fs");
 
     //Models:
 
-
-    //Textures:
-    
-    //VBOs:
-
-    //for Living Room:
-    VBO livingRoomVBO(LivingRoom::vertices, sizeof(LivingRoom::vertices));
-    VBO roomVBO(Room::vertices, sizeof(Room::vertices));
-    VBO cubeVBO(Cube::vertices, sizeof(Cube::vertices));
-    VBO sofaVBO(Sofa::vertices, sizeof(Sofa::vertices));
-
-
-    //VAOs:
-	VAO livingRoomVAO; livingRoomVAO.init(livingRoomVBO);
-	VAO roomVAO; roomVAO.init(roomVBO);
-    VAO cubeVAO; cubeVAO.init(cubeVBO);
-    VAO sofaVAO; sofaVAO.init(sofaVBO);
-    
-
-        //texture:
+    //textures:
+    //..container:
     TextureClass containerTex("../resources/textures/pattern.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
     TextureClass containerSpecTex("../resources/textures/container2_specular.png", GL_TEXTURE_2D, GL_TEXTURE1, GL_RGBA, GL_UNSIGNED_BYTE);
+    //..myWindow:
+    TextureClass myWindowTex("../resources/textures/window.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+    TextureClass myWindowSpecTex("../resources/textures/window.png", GL_TEXTURE_2D, GL_TEXTURE1, GL_RGBA, GL_UNSIGNED_BYTE);
+    
 
-    // create a sphere with default params;
-// radius=1, sectors=36, stacks=18, smooth=true
+    //Objects;
     Cubesphere sphere;
 
+    Cubesphere myWindow(1.0f, 0, true);
+    glm::mat4 myWindowModel = glm::mat4(1.0f);
+    myWindowModel = glm::scale(myWindowModel, glm::vec3(1.0f, 1.0f, 0.01f));
 
-    // create VBO to copy interleaved vertex data (V/N/T) to VBO             // usage
+    //VBOs:
     VBO vbo(sphere.getInterleavedVertices(), sphere.getInterleavedVertexSize());
+    VBO myWindowVBO(myWindow.getInterleavedVertices(), myWindow.getInterleavedVertexSize());
+    
+    //VAOs:
     VAO vao; vao.init(vbo);
+    VAO myWindowVAO; myWindowVAO.init(myWindowVBO);
+    
+    //EBOs:
     EBO ebo(sphere.getIndices(), sphere.getIndexSize());
+    EBO myWindowEBO(myWindow.getIndices(), myWindow.getIndexSize());
 
     // render loop:
     while(!controller.shouldClose()){
@@ -98,29 +98,47 @@ int main()
         //start mainShader:
         
         mainShader.use();
-        mainShader.setFloat("shininess", 64.0f);
-        containerTex.Bind();
-        containerSpecTex.Bind();
-        containerTex.texUnit(mainShader, "texture.diffuse1", 0);
-        containerSpecTex.texUnit(mainShader, "texture.specular1", 1);
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
         mainShader.setMat4("projection", projection);
         mainShader.setMat4("view", view);
+        mainShader.setFloat("shininess", 32.0f);
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-        mainShader.setMat4("model", model);
+
+        //Light:
         Light light(mainShader, true, 1, false, camera.Position, camera.Front);
         light.pointLightPosition[0] = glm::vec3(0.0f, 0.0f, 3.0f);
         light.turnOnTheLights();
+        
+        //sphere:
+        //..material:
+        TextureClass::enable(mainShader, containerTex, containerSpecTex);
+        //..model:
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -6.0f));
+        mainShader.setMat4("model", model);
 
-        // draw a sphere with VAO
+        //..draw:
         vao.Bind(); ebo.Bind();
-        glDrawElements(GL_TRIANGLES,                    // primitive type
-        sphere.getIndexCount(),          // # of indices
-        GL_UNSIGNED_INT,                 // data type
-        (void*)0);                       // offset to indices
+        glDrawElements(GL_TRIANGLES, sphere.getIndexCount(), GL_UNSIGNED_INT, (void*)0); 
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 15.0f));
+        mainShader.setMat4("model", model);
+        glDrawElements(GL_TRIANGLES, sphere.getIndexCount(), GL_UNSIGNED_INT, (void*)0); 
 
+
+        //myWindow:
+
+        blendingShader.use();
+        blendingShader.setMat4("projection", projection);
+        blendingShader.setMat4("view", view);
+        //..material:
+        TextureClass::enable(blendingShader, myWindowTex, myWindowSpecTex);
+        //..model:
+        model = glm::translate(myWindowModel, glm::vec3(0.0f, 0.0f, -2.0f));
+        blendingShader.setMat4("model", model);
+
+        //..draw:
+        myWindowVAO.Bind(); myWindowEBO.Bind();
+        glDrawElements(GL_TRIANGLES, myWindow.getIndexCount(), GL_UNSIGNED_INT, (void*)0);                       
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
