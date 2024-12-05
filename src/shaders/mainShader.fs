@@ -15,6 +15,7 @@ uniform vec3 viewPos;
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
 uniform float shininess;
+uniform float alpha; // Alpha value to control transparency
 
 // Directional Light
 struct DirLight {
@@ -70,28 +71,27 @@ void main()
     // Fetch textures once
     vec3 diffuseTex = vec3(texture(texture_diffuse1, TexCoords));
     vec3 specularTex = vec3(texture(texture_specular1, TexCoords));
+    float alphaValue = texture(texture_diffuse1, TexCoords).a * alpha;
 
     // Skip processing if alpha is low (transparency)
-    if (texture(texture_diffuse1, TexCoords).a < 0.1f)
+    if (alphaValue < 0.1f)
         discard;
 
     // Initialize result color
     vec3 result = vec3(0.0);
 
     // Directional light
-    if (enableDir) 
-        result += CalcDirLight(dirLight, norm, viewDir, diffuseTex, specularTex);
+    if (enableDir) result += CalcDirLight(dirLight, norm, viewDir, diffuseTex, specularTex);
 
     // Point lights
     for (int i = 0; i < numOfPoints; i++) 
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir, diffuseTex, specularTex);
 
     // Spotlight
-    if (enableSpot) 
-        result += CalcSpotLight(spotLight, norm, FragPos, viewDir, diffuseTex, specularTex);
+    if (enableSpot) result += CalcSpotLight(spotLight, norm, FragPos, viewDir, diffuseTex, specularTex);
 
     // Output the final color
-    FragColor = vec4(result, 1.0);
+    FragColor = vec4(result, alphaValue);
 }
 
 // Calculate directional light

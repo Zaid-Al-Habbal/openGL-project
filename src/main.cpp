@@ -54,7 +54,7 @@ int main()
 
     //Shaders:
     Shader mainShader("../src/shaders/mainShader.vs", "../src/shaders/mainShader.fs");
-    Shader blendingShader("../src/shaders/mainShader.vs", "../src/shaders/blendingShader.fs");
+    // Shader blendingShader("../src/shaders/mainShader.vs", "../src/shaders/blendingShader.fs");
 
     //Models:
 
@@ -103,6 +103,7 @@ int main()
         mainShader.setMat4("projection", projection);
         mainShader.setMat4("view", view);
         mainShader.setFloat("shininess", 32.0f);
+        mainShader.setFloat("alpha", 1.0f);
         glm::mat4 model = glm::mat4(1.0f);
 
         //Light:
@@ -126,15 +127,12 @@ int main()
 
 
         //myWindow:
-
-        blendingShader.use();
-        blendingShader.setMat4("projection", projection);
-        blendingShader.setMat4("view", view);
         //..material:
-        TextureClass::enable(blendingShader, myWindowTex, myWindowSpecTex);
+        TextureClass::enable(mainShader, myWindowTex, myWindowSpecTex);
+        mainShader.setFloat("alpha", controller.ALPHA);
         //..model:
         model = glm::translate(myWindowModel, glm::vec3(0.0f, 0.0f, -2.0f));
-        blendingShader.setMat4("model", model);
+        mainShader.setMat4("model", model);
 
         //..draw:
         myWindowVAO.Bind(); myWindowEBO.Bind();

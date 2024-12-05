@@ -17,6 +17,7 @@ private:
     float deltaTime;
     float lastFrame;
 
+
     // Mouse tracking
     float lastX, lastY;
     bool firstMouse;
@@ -31,6 +32,8 @@ private:
     static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 public:
+    float ALPHA;
+    
     // Constructor
     Controller(unsigned int width = 800, unsigned int height = 600);
 
