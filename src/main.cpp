@@ -54,7 +54,6 @@ int main()
 
     //Shaders:
     Shader mainShader("../src/shaders/mainShader.vs", "../src/shaders/mainShader.fs");
-    // Shader blendingShader("../src/shaders/mainShader.vs", "../src/shaders/blendingShader.fs");
 
     //Models:
 
@@ -64,7 +63,7 @@ int main()
     TextureClass containerSpecTex("../resources/textures/container2_specular.png", GL_TEXTURE_2D, GL_TEXTURE1, GL_RGBA, GL_UNSIGNED_BYTE);
     //..myWindow:
     TextureClass myWindowTex("../resources/textures/window.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-    TextureClass myWindowSpecTex("../resources/textures/window.png", GL_TEXTURE_2D, GL_TEXTURE1, GL_RGBA, GL_UNSIGNED_BYTE);
+    TextureClass myWindowSpecTex("../resources/textures/white.jpg", GL_TEXTURE_2D, GL_TEXTURE1, GL_RGB, GL_UNSIGNED_BYTE);
     
 
     //Objects;
@@ -107,7 +106,7 @@ int main()
         glm::mat4 model = glm::mat4(1.0f);
 
         //Light:
-        Light light(mainShader, true, 1, false, camera.Position, camera.Front);
+        Light light(mainShader, true, 1, true, camera.Position, camera.Front);
         light.pointLightPosition[0] = glm::vec3(0.0f, 0.0f, 3.0f);
         light.turnOnTheLights();
         
@@ -129,7 +128,7 @@ int main()
         //myWindow:
         //..material:
         TextureClass::enable(mainShader, myWindowTex, myWindowSpecTex);
-        mainShader.setFloat("alpha", controller.ALPHA);
+        mainShader.setFloat("alpha", 0.5f);
         //..model:
         model = glm::translate(myWindowModel, glm::vec3(0.0f, 0.0f, -2.0f));
         mainShader.setMat4("model", model);

@@ -9,8 +9,7 @@ Controller::Controller(unsigned int width, unsigned int height):
     lastY(height / 2.0f),
     firstMouse(true),
     SCR_WIDTH(width),
-    SCR_HEIGHT(height),
-    ALPHA(0.5f)
+    SCR_HEIGHT(height)
 {}
 
 Controller::~Controller() {
@@ -64,10 +63,6 @@ void Controller::processInput() {
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        this->ALPHA+=0.01f;
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        this->ALPHA-=0.01f;    
 }
 
 void Controller::updateDeltaTime() {

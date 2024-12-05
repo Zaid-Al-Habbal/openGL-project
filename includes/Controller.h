@@ -32,7 +32,6 @@ private:
     static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 public:
-    float ALPHA;
     
     // Constructor
     Controller(unsigned int width = 800, unsigned int height = 600);
