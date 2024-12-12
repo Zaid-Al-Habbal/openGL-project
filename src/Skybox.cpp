@@ -49,30 +49,28 @@ static const float skyboxVertices[] =  {
     };
 
 static const std::vector<std::string> morningFaces = {
-        "../resources/objects/skybox/right.jpg",
-        "../resources/objects/skybox/left.jpg",
-        "../resources/objects/skybox/top.jpg",
-        "../resources/objects/skybox/bottom.jpg",
-        "../resources/objects/skybox/front.jpg",
-        "../resources/objects/skybox/back.jpg"
+        "../resources/objects/skybox/morning2/right.jpg",
+        "../resources/objects/skybox/morning2/left.jpg",
+        "../resources/objects/skybox/morning2/top.jpg",
+        "../resources/objects/skybox/morning2/bottom.jpg",
+        "../resources/objects/skybox/morning2/front.jpg",
+        "../resources/objects/skybox/morning2/back.jpg"
 };
 
 static const std::vector<std::string> eveningFaces = {
-        "../resources/objects/skybox/right.jpg",
-        "../resources/objects/skybox/left.jpg",
-        "../resources/objects/skybox/top.jpg",
-        "../resources/objects/skybox/bottom.jpg",
-        "../resources/objects/skybox/front.jpg",
-        "../resources/objects/skybox/back.jpg"
+        "../resources/objects/skybox/night/right.jpg",
+        "../resources/objects/skybox/night/left.jpg",
+        "../resources/objects/skybox/night/top.jpg",
+        "../resources/objects/skybox/night/bottom.jpg",
+        "../resources/objects/skybox/night/front.jpg",
+        "../resources/objects/skybox/night/back.jpg"
 };
 
-Skybox::Skybox(Shader shader) {
+Skybox::Skybox() {
     // Load textures
     cubemapTextureMorning = loadCubemap(morningFaces);
     cubemapTextureEvening = loadCubemap(eveningFaces);
     currentTexture = cubemapTextureMorning;
-    shader.use();
-    shader.setInt("skybox", 0);
 
     // Setup VAO and VBO
     glGenVertexArrays(1, &VAO);
@@ -83,6 +81,7 @@ Skybox::Skybox(Shader shader) {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 }
+
 
 Skybox::~Skybox() {
     glDeleteVertexArrays(1, &VAO);
@@ -119,6 +118,7 @@ unsigned int Skybox::loadCubemap(const std::vector<std::string>& faces) {
 void Skybox::draw(Shader shader, const glm::mat4& view, const glm::mat4& projection) {
     glDepthFunc(GL_LEQUAL);
     shader.use();
+    shader.setInt("skybox", 0);
     shader.setMat4("view", glm::mat4(glm::mat3(view))); // Remove translation from view matrix
     shader.setMat4("projection", projection);
     glActiveTexture(GL_TEXTURE0);

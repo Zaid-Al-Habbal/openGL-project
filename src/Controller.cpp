@@ -18,6 +18,26 @@ Controller::~Controller() {
     }
     glfwTerminate();
 }
+
+void Controller::initializeOpenGLSettings(){
+    // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
+    // stbi_set_flip_vertically_on_load(true);
+
+    // configure global opengl state
+    glEnable(GL_DEPTH_TEST);
+
+    // enable blending:
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    //enable face culling:
+    glEnable(GL_CULL_FACE);
+    // glCullFace(GL_FRONT); 
+
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+}
+
 bool Controller::initializeWindow(const std::string& title) {
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;

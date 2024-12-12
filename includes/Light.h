@@ -9,7 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include"shader.h"
-#include"TextureClass.h"
+#include"TextureManager.h"
 #include "camera.h"
 
 #include <vector>

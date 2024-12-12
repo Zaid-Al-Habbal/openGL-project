@@ -15,10 +15,21 @@ private:
     unsigned int loadCubemap(const std::vector<std::string>& faces);
 
 public:
-    Skybox(Shader shader);
+    Skybox();
     ~Skybox();
     void draw(Shader shader, const glm::mat4& view, const glm::mat4& projection);
     void setEnvironment(bool isMorning);
 };
 
 #endif
+
+
+// loads a cubemap texture from 6 individual texture faces
+// order:
+// +X (right)
+// -X (left)
+// +Y (top)
+// -Y (bottom)
+// +Z (front) 
+// -Z (back)
+// -------------------------------------------------------

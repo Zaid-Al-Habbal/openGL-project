@@ -54,6 +54,7 @@ public:
 
     // Timing utilities
     void updateDeltaTime();
+    void initializeOpenGLSettings();
 };
 
 #endif
