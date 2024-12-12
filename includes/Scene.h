@@ -9,12 +9,14 @@
 #include "App/3DModels.h"
 
 #include "Skybox.h"
+#include "Light.h"
 #include "Controller.h"
 
 class Scene : public App
 {
 private:
     Skybox skybox;     // skybox.setEnvironment(false); // evening
+    Light light;
     map<string, TextureManager> textures;
     map<string, Shader> shaders;
     map<string, VAO> vaos;

@@ -3,18 +3,27 @@
 
 Scene::Scene()
 {
+    //texture:
     textures = texturesBuilder.textures;
+    //shaders:
     shaders = shadersBuilder.shaders;
+    //buffer management
     vaos = objectsBuilder.vaos;
     ebos = objectsBuilder.ebos;
+    //objects
     cubes = objectsBuilder.cubes;
     spheres = objectsBuilder.spheres;
     icos = objectsBuilder.icos;
     cones = objectsBuilder.cones;
     cylinders = objectsBuilder.cylinders;
     toruses = objectsBuilder.toruses;
+    //glm::models
     models = modelsBuilder.models;
+    //3D models
     threeDModels = threeDModelsBuilder.threeDModels;
+    //light
+    light = Light(shaders["main"], true, 0, false);
+
 }
 
 void Scene::draw(string objectName, int numOfVertices)
@@ -40,9 +49,7 @@ void Scene::render(Controller& controller)
     shaders["main"].setFloat("alpha", 1.0f);
 
     //Light:
-    Light light(shaders["main"], true, 1, false, camera.Position, camera.Front);
-    light.pointLightPosition[0] = glm::vec3(0.0f, 0.0f, 3.0f);
-    light.turnOnTheLights();
+    light.update(camera.Position, camera.Front);
     
     //cube:
     TextureManager::enable(shaders["main"], textures[container], textures[containerSpec]);
@@ -50,11 +57,12 @@ void Scene::render(Controller& controller)
     
 
     // draw skybox as last
+    skybox.setEnvironment(!controller.isNight);
     skybox.draw(shaders["skybox"], view, projection);
 
     //Window:
     //..material:
-    TextureManager::enable(shaders["main"], textures["window"], textures["windowSpec"]);
+    TextureManager::enable(shaders["main"], textures[window], textures[windowSpec]);
     shaders["main"].setFloat("alpha", 0.5f);
 
     //..draw:

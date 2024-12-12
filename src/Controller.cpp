@@ -9,7 +9,8 @@ Controller::Controller(unsigned int width, unsigned int height):
     lastY(height / 2.0f),
     firstMouse(true),
     SCR_WIDTH(width),
-    SCR_HEIGHT(height)
+    SCR_HEIGHT(height),
+    isNight(false)
 {}
 
 Controller::~Controller() {
@@ -83,6 +84,8 @@ void Controller::processInput() {
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
+        isNight = !isNight;
 }
 
 void Controller::updateDeltaTime() {

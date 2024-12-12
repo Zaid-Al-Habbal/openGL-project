@@ -9,6 +9,7 @@
 
 class Controller {
 private:
+
     // Camera and window management
     Camera camera;
     GLFWwindow* window;
@@ -32,7 +33,9 @@ private:
     static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 public:
-    
+    //morning/night
+    bool isNight;
+
     // Constructor
     Controller(unsigned int width = 800, unsigned int height = 600);
 

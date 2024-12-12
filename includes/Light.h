@@ -37,9 +37,13 @@ public:
     glm::vec3 viewPos;
     //Material:
     
-    Light(Shader myShader, bool enableDir, int numOfPoints, bool enableSpot, glm::vec3 cameraPos, glm::vec3 cameraFront);
+    Light(Shader shader, bool enableDir, int numOfPoints, bool enableSpot);
+    Light();
 
-    void turnOnTheLights();
+    void turnOnDir();
+    void turnOnPoint();
+    void turnOnSpot();
+    void update(glm::vec3 cameraPos, glm::vec3 cameraFront);
 	
 };
 #endif
