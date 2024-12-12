@@ -1,13 +1,12 @@
 #ifndef SHADERS_H
 #define SHADERS_H
 
-#include <iostream>
-#include <map>
+#include "App.h"
 #include "shader.h"
 
-using namespace std;
 
-class Shaders {
+class Shaders : public App
+{
 public:
     map<string, Shader> shaders;
     Shaders()

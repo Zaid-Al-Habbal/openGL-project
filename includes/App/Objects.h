@@ -1,8 +1,7 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 
-#include <iostream>
-#include <map>
+#include "App.h"
 
 #include "VAO.h"
 #include "VBO.h"
@@ -18,7 +17,8 @@
 
 using namespace std;
 
-class Objects {
+class Objects : public App
+{
 public:
     map<string, VAO> vaos;
     map<string, EBO> ebos;
@@ -52,12 +52,12 @@ public:
     void setCubesphere()
     {
         //window:
-        cubes["window"] = Cubesphere(1.0f, 0, true);
-        cubeBuffers("window");
+        cubes[window] = Cubesphere(1.0f, 0, true);
+        cubeBuffers(window);
         
         //cube:
-        cubes["cube"] = Cubesphere(1.0f, 0, true);
-        cubeBuffers("cube");
+        cubes[cube] = Cubesphere(1.0f, 0, true);
+        cubeBuffers(cube);
         
     }
 

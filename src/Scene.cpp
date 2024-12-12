@@ -45,8 +45,8 @@ void Scene::render(Controller& controller)
     light.turnOnTheLights();
     
     //cube:
-    TextureManager::enable(shaders["main"], textures["container"], textures["containerSpec"]);
-    draw("cube", cubes["cube"].getIndexCount());
+    TextureManager::enable(shaders["main"], textures[container], textures[containerSpec]);
+    draw(cube, cubes[cube].getIndexCount());
     
 
     // draw skybox as last
@@ -58,9 +58,9 @@ void Scene::render(Controller& controller)
     shaders["main"].setFloat("alpha", 0.5f);
 
     //..draw:
-    draw("window", cubes["window"].getIndexCount());
+    draw(window, cubes[window].getIndexCount());
 
     //Window:
     shaders["main"].setMat4("model", models["mirror"]);
-    threeDModels["mirror"].Draw(shaders["main"]);
+    threeDModels[mirror].Draw(shaders["main"]);
 }

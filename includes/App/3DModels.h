@@ -1,21 +1,17 @@
 #ifndef DMODELS_H
 #define DMODELS_H
 
-#include <iostream>
-#include <map>
-
+#include "App.h"
 #include "Model.h"
 
-
-using namespace std;
-
-class ThreeDModels {
+class ThreeDModels : public App
+{
 public:
     map<string, Model> threeDModels;
     
     ThreeDModels()
     {
-        threeDModels["mirror"] = Model("../resources/objects/mirror/ornate_mirror_01_2k.gltf");
+        threeDModels[mirror] = Model("../resources/objects/mirror/ornate_mirror_01_2k.gltf");
 
 
     }

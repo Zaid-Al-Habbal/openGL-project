@@ -1,6 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include "App/App.h"
 #include "App/Textures.h"
 #include "App/Shaders.h"
 #include "App/Models.h"
@@ -10,7 +11,7 @@
 #include "Skybox.h"
 #include "Controller.h"
 
-class Scene
+class Scene : public App
 {
 private:
     Skybox skybox;     // skybox.setEnvironment(false); // evening
