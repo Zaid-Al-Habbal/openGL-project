@@ -8,7 +8,7 @@
 #include "App/3DModels.h"
 
 #include "Skybox.h"
-#include "camera.h"
+#include "Controller.h"
 
 class Scene
 {
@@ -40,7 +40,7 @@ private:
 
 public:
     Scene();
-    void render(Camera camera);
+    void render(Controller& controller);
     void draw(string ObjectName, int numOfVertices);
 };
 #endif

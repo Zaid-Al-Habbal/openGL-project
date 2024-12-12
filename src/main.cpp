@@ -20,10 +20,9 @@ int main()
     while(!controller.shouldClose()){
         controller.updateDeltaTime();
         controller.processInput();
-        Camera camera = controller.getCamera();
 
         // render
-        scene.render(camera);
+        scene.render(controller);
         
         glfwSwapBuffers(controller.getWindow());
         glfwPollEvents();

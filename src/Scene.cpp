@@ -25,9 +25,9 @@ void Scene::draw(string objectName, int numOfVertices)
 
 }
 
-void Scene::render(Camera camera)
+void Scene::render(Controller& controller)
 {
-    // Camera camera = controller.getCamera();
+    Camera camera = controller.getCamera();
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
     
