@@ -11,7 +11,7 @@ public:
     
     ThreeDModels()
     {
-        threeDModels[mirror] = Model("../resources/objects/mirror/ornate_mirror_01_2k.gltf");
+        // threeDModels[mirror] = Model("../resources/objects/mirror/ornate_mirror_01_2k.gltf");
 
 
     }

@@ -26,11 +26,11 @@ Scene::Scene()
 
 }
 
-void Scene::draw(string objectName, int numOfVertices)
+void Scene::draw(string objectName, int numOfVertices, int startFrom)
 {
     shaders["main"].setMat4("model", models[objectName]);
     vaos[objectName].Bind(); ebos[objectName].Bind();
-    glDrawElements(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, (void*)0);  
+    glDrawElements(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, (void*)(startFrom*sizeof(float)));  
 
 }
 
@@ -51,9 +51,10 @@ void Scene::render(Controller& controller)
     //Light:
     light.update(camera.Position, camera.Front);
     
+    
     //cube:
     TextureManager::enable(shaders["main"], textures[container], textures[containerSpec]);
-    draw(cube, cubes[cube].getIndexCount());
+    draw(cube, cubes[cube].getIndexCount(), 0);
     
 
     // draw skybox as last
@@ -66,9 +67,7 @@ void Scene::render(Controller& controller)
     shaders["main"].setFloat("alpha", 0.5f);
 
     //..draw:
-    draw(window, cubes[window].getIndexCount());
+    draw(window, cubes[window].getIndexCount(),0);
 
-    //Window:
-    shaders["main"].setMat4("model", models["mirror"]);
-    threeDModels[mirror].Draw(shaders["main"]);
+    
 }

@@ -56,7 +56,7 @@ public:
         cubeBuffers(window);
         
         //cube:
-        cubes[cube] = Cubesphere(1.0f, 0, true);
+        cubes[cube] = Cubesphere(3.0f, 0, true);
         cubeBuffers(cube);
         
     }
