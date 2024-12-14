@@ -32,17 +32,19 @@ void Renderer::render(Controller& controller)
     glm::mat4 view = camera.GetViewMatrix();
     shaders[MAIN].setMat4("projection", projection);
     shaders[MAIN].setMat4("view", view);
-    shaders[MAIN].setFloat("shininess", 32.0f);
-    shaders[MAIN].setFloat("alpha", 1.0f);
+    
 
     //Light:
     light.update(camera.Position, camera.Front);
     
     
     //Wall:
-    TextureManager::enable(shaders[MAIN], textures[BLUE_METAL], textures[BLUE_METAL_SPEC]);
+    TextureManager::enable(shaders[MAIN], textures[AWESOME_FACE], textures[AWESOME_FACE_SPEC]);
+    //first wall:
     draw(WALL, cubes[WALL].getIndexCount());
-    
+    //second wall:
+    shaders[MAIN].setFloat("textureCnt", 10.0f);
+    draw(WALL2, cubes[WALL2].getIndexCount());
     // draw skybox as last
     skybox.setEnvironment(!controller.isNight);
     skybox.draw(shaders[SKYBOX], view, projection);

@@ -19,10 +19,14 @@ public:
     //Textures
     BLUE_METAL = "blueMetal",
     BLUE_METAL_SPEC = "blueMetalSpec",
+    AWESOME_FACE = "awesomeFace",
+    AWESOME_FACE_SPEC = "awsomeFaceSpec",
 
 
     //Objects:
-    WALL = "wall";
+    WALL = "wall",
+    WALL2 = "wall2"
+    ;
 };
 
 #endif
