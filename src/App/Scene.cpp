@@ -5,12 +5,14 @@ using namespace glm;
 Scene::Scene()
 {
     const glm::mat4 MODEL(1.0f);
+    const glm::vec3 X(1.0f, 0.0f, 0.0f), Y(0.0f, 1.0f, 0.0f), Z(0.0f, 0.0f, 1.0f);
 
     //wall:
     cubes[WALL] = Cubesphere(30.0f, 0, true);
     cubeBuffers(WALL);
-    models[WALL] = translate(models[WALL], glm::vec3(0.0f, 0.0f, -8.0f));
-    models[WALL] = scale(MODEL, vec3(0.005f, 1.0f, 1.0f));
+    models[WALL] = translate(MODEL, glm::vec3(0.0f, 0.0f, -8.0f));
+    models[WALL] = rotate(models[WALL], radians(90.0f), Y);
+    models[WALL] = scale(models[WALL], vec3(0.005f, 1.0f, 1.0f));
 
     //wall2:
     cubes[WALL2] = cubes[WALL];

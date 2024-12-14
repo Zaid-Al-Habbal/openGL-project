@@ -21,6 +21,8 @@ public:
     BLUE_METAL_SPEC = "blueMetalSpec",
     AWESOME_FACE = "awesomeFace",
     AWESOME_FACE_SPEC = "awsomeFaceSpec",
+    TRANS_WINDOW = "transWindow",
+    TRANS_WINDOW_SPEC = "transWindowSpec",
 
 
     //Objects:
