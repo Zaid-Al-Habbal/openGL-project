@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 // #include <stb_image.h>
 #include "Controller.h"
-#include "Scene.h"
+#include "App/Renderer.h"
 
 using namespace std;
 
@@ -13,8 +13,8 @@ int main()
     if (!controller.initializeWindow("Learning CG")) return -1;
     controller.initializeOpenGLSettings();
     
-    //Scene:
-    Scene scene;
+    //Renderer:
+    Renderer renderer;
     
     // render loop:
     while(!controller.shouldClose()){
@@ -22,7 +22,7 @@ int main()
         controller.processInput();
 
         // render
-        scene.render(controller);
+        renderer.render(controller);
         
         glfwSwapBuffers(controller.getWindow());
         glfwPollEvents();

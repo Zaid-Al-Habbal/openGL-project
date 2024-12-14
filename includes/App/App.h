@@ -11,14 +11,18 @@ class App
 public:
     const string
     
-    window = "window",
-    windowSpec = "windowSpec",
+    //Shaders:
+    MAIN = "main",
+    SKYBOX = "skybox",
 
-    cube = "cube",
-    container = "container",
-    containerSpec = "containerSpec",
     
-    mirror = "mirror";
+    //Textures
+    BLUE_METAL = "blueMetal",
+    BLUE_METAL_SPEC = "blueMetalSpec",
+
+
+    //Objects:
+    WALL = "wall";
 };
 
 #endif
