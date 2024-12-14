@@ -1,4 +1,5 @@
 #include "Controller.h"
+#include <stb_image.h>
 
 Controller::Controller(unsigned int width, unsigned int height):
     camera(glm::vec3(0.0f, 0.0f, 3.0f)),

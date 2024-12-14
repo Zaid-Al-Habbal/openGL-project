@@ -68,6 +68,7 @@ static const std::vector<std::string> eveningFaces = {
 
 Skybox::Skybox() {
     // Load textures
+    stbi_set_flip_vertically_on_load(false);
     cubemapTextureMorning = loadCubemap(morningFaces);
     cubemapTextureEvening = loadCubemap(eveningFaces);
     currentTexture = cubemapTextureMorning;

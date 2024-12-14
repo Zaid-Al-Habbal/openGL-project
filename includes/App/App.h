@@ -23,10 +23,13 @@ public:
     AWESOME_FACE_SPEC = "awsomeFaceSpec",
     TRANS_WINDOW = "transWindow",
     TRANS_WINDOW_SPEC = "transWindowSpec",
+    ROBOT = "robot",
+    ROBOT_SPEC = "robotSpec",
 
 
     //Objects:
-    WALL = "wall"
+    WALL = "wall",
+    TRANSFORMER = "transformer"
     ;
 };
 
