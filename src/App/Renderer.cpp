@@ -15,9 +15,8 @@ Renderer::Renderer()
 
 void Renderer::draw(string objectName, int numOfVertices)
 {
-    shaders[MAIN].setMat4("model", models[objectName]);
     vaos[objectName].Bind(); ebos[objectName].Bind();
-    glDrawElements(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, (void*)0);  
+    glDrawElementsInstanced(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, (void*)0, models[objectName].size());  
 
 }
 
@@ -27,6 +26,8 @@ void Renderer::render(Controller& controller)
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
     
+    glGetError();
+
     //MAIN
     shaders[MAIN].use();
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -51,8 +52,7 @@ void Renderer::render(Controller& controller)
     shaders[MAIN].setFloat("alpha", 0.5f);
     //first wall:
     draw(WALL, cubes[WALL].getIndexCount());
-    //second wall:
-    draw(WALL2, cubes[WALL2].getIndexCount());
+    
 
 
     

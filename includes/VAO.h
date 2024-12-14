@@ -15,7 +15,7 @@ public:
 	// Links a VBO Attribute such as a position or color to the VAO
 	void LinkAttrib(VBO& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
 	
-	void init(VBO& VBO);
+	void init(VBO& vbo, VBO& instanceVBO);
 	// Binds the VAO
 	void Bind();
 	// Unbinds the VAO

@@ -7,7 +7,13 @@ VBO::VBO(const float* vertices, GLsizeiptr size)
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 	glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 }
-
+//for instance VBO:
+VBO::VBO(std::vector<glm::mat4> instanceModels, int vecSize)
+{
+	glGenBuffers(1, &ID);
+	glBindBuffer(GL_ARRAY_BUFFER, ID);
+	glBufferData(GL_ARRAY_BUFFER, vecSize * sizeof(glm::mat4), instanceModels.data(), GL_STATIC_DRAW);
+}
 // Binds the VBO
 void VBO::Bind()
 {

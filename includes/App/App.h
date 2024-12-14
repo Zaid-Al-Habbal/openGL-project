@@ -26,8 +26,7 @@ public:
 
 
     //Objects:
-    WALL = "wall",
-    WALL2 = "wall2"
+    WALL = "wall"
     ;
 };
 

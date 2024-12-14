@@ -5,6 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <vector>
+
 #include "App.h"
 
 #include "VAO.h"
@@ -35,7 +37,7 @@ public:
     map<string, Cone> cones;
     map<string, Torus> toruses;
 
-    map<string, glm::mat4> models;
+    map<string, vector<glm::mat4>> models;
 
     map<string, Model> threeDModels;
 
