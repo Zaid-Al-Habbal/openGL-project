@@ -4,6 +4,10 @@
 #include "Controller.h"
 #include "App/Renderer.h"
 
+#include <irrKlang.h>
+
+using namespace irrklang;
+
 using namespace std;
 
 int main()
@@ -12,6 +16,9 @@ int main()
     Controller controller;
     if (!controller.initializeWindow("Learning CG")) return -1;
     controller.initializeOpenGLSettings();
+
+    ISoundEngine *SoundEngine = createIrrKlangDevice();
+    SoundEngine->play2D("../resources/audio/song.ogg", true);
     
     //Renderer:
     Renderer renderer;

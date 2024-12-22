@@ -13,26 +13,6 @@ Renderer::Renderer()
 
 }
 
-void Renderer::draw(string objectName, int numOfVertices)
-{
-    vaos[objectName].Bind(); ebos[objectName].Bind();
-    glDrawElementsInstanced(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, (void*)0, models[objectName].size());  
-
-}
-void Renderer::draw3Dmodel(string name)
-{
-    shaders[MAIN].setFloat("textureCnt", 1.0f);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, threeDModels[name].textures_loaded[0].id); // note: we also made the textures_loaded vector public (instead of private) from the model class.
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, threeDModels[name].textures_loaded[1].id); // note: we also made the textures_loaded vector public (instead of private) from the model class.
-    for (unsigned int i = 0; i < threeDModels[name].meshes.size(); i++)
-    {
-        glBindVertexArray(threeDModels[name].meshes[i].VAO);
-        glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(threeDModels[name].meshes[i].indices.size()), GL_UNSIGNED_INT, 0, models[name].size());
-        glBindVertexArray(0);
-    }
-}
 
 void Renderer::render(Controller& controller)
 {
@@ -66,4 +46,24 @@ void Renderer::render(Controller& controller)
     skybox.draw(shaders[SKYBOX], view, projection);
 
     
+}
+void Renderer::draw(string objectName, int numOfVertices)
+{
+    vaos[objectName].Bind(); ebos[objectName].Bind();
+    glDrawElementsInstanced(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, (void*)0, models[objectName].size());  
+
+}
+void Renderer::draw3Dmodel(string name)
+{
+    shaders[MAIN].setFloat("textureCnt", 1.0f);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, threeDModels[name].textures_loaded[0].id); // note: we also made the textures_loaded vector public (instead of private) from the model class.
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, threeDModels[name].textures_loaded[1].id); // note: we also made the textures_loaded vector public (instead of private) from the model class.
+    for (unsigned int i = 0; i < threeDModels[name].meshes.size(); i++)
+    {
+        glBindVertexArray(threeDModels[name].meshes[i].VAO);
+        glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(threeDModels[name].meshes[i].indices.size()), GL_UNSIGNED_INT, 0, models[name].size());
+        glBindVertexArray(0);
+    }
 }
