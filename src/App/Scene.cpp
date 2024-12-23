@@ -28,7 +28,7 @@ Scene::Scene()
     for(int i=0; i<100; i++){
         model = translate(model, vec3(3.0f, 0.0f, 0.0f));
         models[TRANSFORMER].push_back(model);
-        model = translate(model, vec3(0.0f, 3.0f, 0.0f));
+        model = translate(model, vec3(0.0f, 0.0f, 3.0f));
         models[TRANSFORMER].push_back(model);
         
     }
